@@ -15,7 +15,7 @@ class Bot():
 
     def __init__(self, api_key):
         if not api_key:
-            raise ValueError("Токен не указан")
+            raise ValueError("Токен не указан.")
         self.api_key = api_key
         self.bot = telegram.Bot(token=api_key)
         self.logger = logging.getLogger('tbot')
@@ -76,7 +76,7 @@ class Bot():
 
     def reply_on_message(self, callback, *args, **kwargs):
         if not callable(callback):
-            raise TypeError('Ожидаем функцию на вход')
+            raise TypeError('Ожидаем функцию на вход.')
         if args:
             raise TypeError(f"{len(args) + 1} were given")
 
