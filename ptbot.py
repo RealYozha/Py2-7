@@ -15,7 +15,7 @@ class Bot():
 
     def __init__(self, api_key):
         if not api_key:
-            raise(ValueError("Токен не указан"))
+            raise ValueError("Токен не указан")
         self.api_key = api_key
         self.bot = telegram.Bot(token=api_key)
         self.logger = logging.getLogger('tbot')
@@ -30,7 +30,9 @@ class Bot():
 
     def update_message(self, chat_id, message_id, new_message):
         self.logger.debug(f'Update message {message_id}: {new_message}')
-        self.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=new_message)
+        self.bot.edit_message_text(chat_id=chat_id,
+                                   message_id=message_id,
+                                   text=new_message)
 
     def create_timer(self, timeout_secs, callback, *args, **kwargs):
         if not callable(callback):
@@ -38,7 +40,7 @@ class Bot():
         if not timeout_secs:
             raise TypeError("Не могу запустить таймер на None секунд")
         if args:
-            raise TypeError(f"create_timer() takes 2 positional arguments but {len(args) + 2} were given")
+            raise TypeError(f"{len(args) + 2} were given")
 
         def wrapper(context):
             callback(**kwargs)
@@ -51,7 +53,7 @@ class Bot():
         if not timeout_secs:
             raise TypeError("Не могу запустить таймер на None секунд")
         if args:
-            raise TypeError(f"create_countdown() takes 2 positional arguments but {len(args) + 2} were given")
+            raise TypeError(f"{len(args) + 2} were given")
 
         def wrapper(context):
             job = context.job
@@ -59,7 +61,11 @@ class Bot():
             try:
                 callback(job.context, **kwargs)
             except Exception as error:
-                traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr, limit=-3)
+                traceback.print_exception(type(error),
+                                          error,
+                                          error.__traceback__,
+                                          file=sys.stderr,
+                                          limit=-3)
                 job.schedule_removal()
             if job.context <= 0:
                 job.schedule_removal()
@@ -72,7 +78,7 @@ class Bot():
         if not callable(callback):
             raise TypeError('Ожидаем функцию на вход')
         if args:
-            raise TypeError(f"reply_on_message() takes 1 positional argument but {len(args) + 1} were given")
+            raise TypeError(f"{len(args) + 1} were given")
 
         def handle_text(update, context):
             users_reply = update.message.text
@@ -84,7 +90,11 @@ class Bot():
     def run_bot(self):
         def error_handler(update, context):
             error = context.error
-            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr, limit=-3)
+            traceback.print_exception(type(error),
+                                      error,
+                                      error.__traceback__,
+                                      file=sys.stderr,
+                                      limit=-3)
 
         self.dispatcher.add_error_handler(error_handler)
         self.updater.start_polling()
