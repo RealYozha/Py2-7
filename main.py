@@ -3,13 +3,8 @@ import os
 import dotenv
 import pytimeparse
 
-dotenv.load_dotenv()
-TGBOT_TOKEN = os.environ['TELEGRAM_BOT_TOKEN']
-TG_CHAT_ID = os.environ['TELEGRAM_CHAT_ID']
-bot = ptbot.Bot(TGBOT_TOKEN)
 
-
-def render_progressbar(total, iteration, prefix='', suffix='', postsuffix='', length=25, fill='▓', zfill='░'):
+def progressbarplus(total, iteration, prefix='', suffix=' ', postsuffix='', length=20, fill='▓', zfill='░'):
     iteration = min(total, iteration)
     percent = "{0:.2f}"
     percent = percent.format(100 * (iteration / float(total)))
@@ -24,14 +19,14 @@ def timer_start(chat_id, reply_text):
                          timer_count,
                          chat_id=chat_id,
                          message_id=message_id,
-                         secs_start=pytimeparse.parse(reply_text))
+                         secs_total=pytimeparse.parse(reply_text))
     bot.create_timer(pytimeparse.parse(reply_text),
                      timer_end,
                      chat_id=chat_id)
 
 
-def timer_count(secs_left, chat_id, message_id, secs_start):
-    bot.update_message(chat_id, message_id, f"Осталось {secs_left} сек.\n{render_progressbar(secs_start, secs_start-secs_left)}")
+def timer_count(secs_left, chat_id, message_id, secs_total):
+    bot.update_message(chat_id, message_id, f"Осталось {secs_left} сек.\n{progressbarplus(secs_total, secs_total-secs_left)}")
 
 
 def timer_end(chat_id):
@@ -45,4 +40,8 @@ def main():
 
 
 if __name__ == '__main__':
+    dotenv.load_dotenv()
+    TGBOT_TOKEN = os.environ['TELEGRAM_BOT_TOKEN']
+    TG_CHAT_ID = os.environ['TELEGRAM_CHAT_ID']
+    bot = ptbot.Bot(TGBOT_TOKEN)
     main()
